@@ -4,16 +4,23 @@ input.onButtonPressed(Button.A, function () {
 input.onButtonPressed(Button.B, function () {
     Periode += 5000
 })
+let Middelverdi = 0
 basic.showIcon(IconNames.Heart)
-let Speed = 100
-let Periode = 30000
+let Speed = 200
+let Periode = 25000
+let Periode_t4 = Periode
+let Periode_t3 = Periode
+let Periode_t2 = Periode
+let Periode_t1 = Periode
 let MåltPeriode = Periode
-pins.digitalWritePin(DigitalPin.P8, 0)
-pins.digitalWritePin(DigitalPin.P12, 1)
-pins.analogWritePin(AnalogPin.P0, Math.constrain(Speed, 0, 1023))
-basic.pause(500)
+pins.digitalWritePin(DigitalPin.P1, 0)
 basic.forever(function () {
-    pins.analogWritePin(AnalogPin.P0, Math.constrain(Speed, 0, 1023))
-    MåltPeriode = Math.constrain(pins.pulseIn(DigitalPin.P1, PulseValue.Low), 10000, 100000)
-    Speed += Math.round((MåltPeriode - Periode) / Periode * 100)
+    pins.analogWritePin(AnalogPin.P0, Math.constrain(Speed, 100, 1023))
+    Periode_t4 = Periode_t3
+    Periode_t3 = Periode_t2
+    Periode_t2 = Periode_t1
+    Periode_t1 = MåltPeriode
+    MåltPeriode = pins.pulseIn(DigitalPin.P8, PulseValue.High)
+    Middelverdi = (Periode_t4 + Periode_t3 + Periode_t2 + Periode_t1 + MåltPeriode) / 5
+    Speed += Math.round((Middelverdi - Periode) / Periode * 100)
 })
